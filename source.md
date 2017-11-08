@@ -50,6 +50,10 @@ Application **firewall** features can protect against common web-based attacks, 
 ### 3. HTTPS
 In the case of **secure websites**, a web server may not perform SSL encryption itself, but instead offloads the task to a reverse proxy that may be equipped with SSL acceleration hardware.
 
+---
+
+## 反向代理作用
+
 ### 4. 负载均衡
 A reverse proxy can **distribute the load** from incoming requests to several servers, with each server serving its own application area.
 
@@ -59,11 +63,19 @@ A reverse proxy can reduce load on its origin servers by **caching static conten
 ### 6. 内容压缩
 A reverse proxy can optimize content by compressing it in order to speed up loading times.
 
+---
+
+## 反向代理作用
+
 ### 7. 分页？
 In a technique named "**spoon-feed**"[2] a dynamically generated page can be **produced all at once** and served to the reverse-proxy, which can then return it to the client **a little bit at a time**. 
 
 ### 8. Docklet
 Reverse proxies can operate wherever multiple web-servers must be accessible via **a single public IP address**.
+
+---
+
+## 反向代理作用
 
 ### 9.
 Commercial or enterprise level out-of-box solutions exist and can have an agent installed on user systems to ensure a constant connection to a cloud proxy / reverse proxy server also a SaaS solution. 
