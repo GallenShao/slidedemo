@@ -43,12 +43,32 @@ See [Reverse proxy - Wikipedia](https://en.wikipedia.org/wiki/Reverse_proxy)
 
 1. **隐藏原始服务器**: Reverse proxies can **hide the existence and characteristics** of an origin server or servers.
 2. **防火墙**: Application **firewall** features can protect against common web-based attacks, like DoS or DDoS.
+
+---
+
+## 反向代理作用
+
 3. **HTTPS**: In the case of **secure websites**, a web server may not perform SSL encryption itself, but instead offloads the task to a reverse proxy that may be equipped with SSL acceleration hardware.
 4. **负载均衡**: A reverse proxy can **distribute the load** from incoming requests to several servers, with each server serving its own application area.
+
+---
+
+## 反向代理作用
+
 5. **缓存**: A reverse proxy can reduce load on its origin servers by caching static content, as well as dynamic content - synonym: web acceleration.
 6. **内容压缩**: A reverse proxy can optimize content by compressing it in order to speed up loading times.
+
+---
+
+## 反向代理作用
+
 7. **分页？**： In a technique named "**spoon-feed**"[2] a dynamically generated page can be **produced all at once** and served to the reverse-proxy, which can then return it to the client **a little bit at a time**. 
 8. **Docklet**: Reverse proxies can operate wherever multiple web-servers must be accessible via **a single public IP address**.
+
+---
+
+## 反向代理作用
+
 9. Commercial or enterprise level out-of-box solutions exist and can have an agent installed on user systems to ensure a constant connection to a cloud proxy / reverse proxy server also a SaaS solution. 
 10. A reverse proxy can add basic HTTP access authentication to a web server that does not have any authentication.
 
@@ -69,7 +89,13 @@ server {
   proxy_pass http://x.x.x.100:80;
 
 }
+```
 
+---
+
+## Multiple web-servers
+
+```
 server { 
   server_name client2.domain.com;
 
@@ -88,6 +114,11 @@ server {
 无法使用多域名，反向代理路由只能依赖URL，此部分却对用户服务器隐藏。
 
 用户服务器返回的网页（如`iwork.pku.edu.cn/user1/index.html`）若需要访问根目录资源，如`<img src="/image/1.png">`，会导致浏览器自动拼接域名和路径，使用`iwork.pku.edu.cn/image/1.png`请求该资源，而此操作跳过了反向代理服务器。
+
+---
+
+## Docklet解决方案的缺点
+
 
 而上述路径的生成可能是动态的不可控的，因此无法在反向代理器统一对其做修改。最佳情况下只能做到大部分场景下（静态页面）可用，且无法保证该修改是没有副作用的。
 
