@@ -1,6 +1,6 @@
 class: center, middle
 
-# 反向代理
+# 虚拟专用网
 
 &nbsp;
 &nbsp;
@@ -9,127 +9,138 @@ class: center, middle
 
 主页: https://github.com/gallenshao
 
-2017年11月9日
+2017年11月13日
 
 ---
 
-## 前向代理
+## 主要内容
 
-代理（英语：Proxy）也称网络代理，是一种特殊的网络服务，允许一个网络终端（一般为客户端）通过这个服务与另一个网络终端（一般为服务器）进行非直接的连接。
+### <font color="orangered">1. 简介与原理</font>
 
-![](./proxy.png)
+### 2. 关键技术
 
----
-
-## 反向代理
-
-与前向代理不同，前向代理作为一个媒介将互联网上获取的资源返回给相关联的客户端，而反向代理是在服务器端（如Web服务器）作为代理使用，而不是客户端。
-
-![](./r-proxy.png)
+### 3. OpenVPN
 
 ---
 
-## 区别
+## 虚拟专用网
 
-客户端通过前向代理可以访问很多不同的资源。
+一句话：是利用公网资源为用户建立的虚拟的专用网络。
 
-反向代理是很多客户端都通过它访问不同后端服务器上的资源，而不需要知道这些后端服务器的存在，而以为所有资源都来自于这个反向代理服务器。
+“虚拟(Virtual)”指的是逻辑连接，并非物理连接。
 
----
+“专用(Private)”指的是这是一种排他性的连接，不允许第三方的嗅探，能提供像专用网络一般的安全性和功能保障。
 
-## 反向代理作用
+主要提供加密、认证和访问控制的功能。
 
-See [Reverse proxy - Wikipedia](https://en.wikipedia.org/wiki/Reverse_proxy)
+## 技术特点
 
-### 1. 隐藏原始服务器
-Reverse proxies can **hide the existence and characteristics** of an origin server or servers.
-
-### 2. 防火墙
-Application **firewall** features can protect against common web-based attacks, like DoS or DDoS.
-
-### 3. HTTPS
-In the case of **secure websites**, a web server may not perform SSL encryption itself, but instead offloads the task to a reverse proxy that may be equipped with SSL acceleration hardware.
+1. 性价比高
+2. 服务质量有保障
+3. 能提供强大的接入控制和入侵保护
 
 ---
 
-## 反向代理作用
+## 分类
 
-### 4. 负载均衡
-A reverse proxy can **distribute the load** from incoming requests to several servers, with each server serving its own application area.
+### remote-access(Client-LAN)
 
-### 5. 缓存
-A reverse proxy can reduce load on its origin servers by **caching static content**, as well as dynamic content - synonym: web acceleration.
+也称为Access VPN，即远程访问方式的VPN，提供了一种安全的远程访问手段，如出差在外的员工可以利用这种类型的VPN安全访问企业内部资源。北大提供的VPN也是属于这种类型。
 
-### 6. 内容压缩
-A reverse proxy can optimize content by compressing it in order to speed up loading times.
+### site-to-site(LAN-LAN)
 
----
-
-## 反向代理作用
-
-### 7. 分页？
-In a technique named "**spoon-feed**"[2] a dynamically generated page can be **produced all at once** and served to the reverse-proxy, which can then return it to the client **a little bit at a time**. 
-
-### 8. Docklet
-Reverse proxies can operate wherever multiple web-servers must be accessible via **a single public IP address**.
+在不同局域网之间建立安全的数据传输通道，构建一个虚拟的统一的局域网。如企业内部各分支机构之间网络的互联等。
 
 ---
 
-## 反向代理作用
+## 原理
 
-### 9.
-Commercial or enterprise level out-of-box solutions exist and can have an agent installed on user systems to ensure a constant connection to a cloud proxy / reverse proxy server also a SaaS solution. 
+VPN通过“隧道”技术实现，数据被封装在一条横跨公网的点对点的虚拟通道，在两个VPN设备之间进行传输，其工作在IP层，具体处理过程为：
 
-### 10.
-A reverse proxy can add basic HTTP access authentication to a web server that does not have any authentication.
+以LAN-LAN类型的VPN为例，假设主机A、B分别在不同局域网，它们所在局域网的网关分别为a、b。若A使用VPN向B发送消息，处理过程如下：
 
----
-
-## Multiple web-servers
-
-一般都通过不同域名实现。
-
-```
-server { 
-  server_name client.domain.com;
-
-  # app1 reverse proxy follow
-  proxy_set_header X-Real-IP $remote_addr;
-  proxy_set_header Host $host;
-  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-  proxy_pass http://x.x.x.100:80;
-
-}
-
-server { 
-  server_name client2.domain.com;
-
-  # app2 reverse proxy settings follow
-  proxy_set_header X-Real-IP $remote_addr;
-  proxy_set_header Host $host;
-  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-  proxy_pass http://x.x.x.100:80;
-}
-```
+1. 主机A发送报文到网关a，源地址为A，目标地址为B
+2. 网关a依据网络管理员设定的规则，决定是否对数据加密还是直接让其通过（此处决定加密）
+3. 网关a对报文进行加密并签名
+4. 对已加密的数据，网关a对其重新封装，源报文作为新报文的有效负载，新报文的源地址改为网关a，目标地址改为网关b，并发送。
+5. 数据到达目标网关b后，数据包被解封装，判断签名正确之后进行解密，将原始报文提取并发送给真正的目标地址B
 
 ---
 
-## Docklet解决方案的缺点
+## 主要内容
 
-无法使用多域名，反向代理路由只能依赖URL，此部分却对用户服务器隐藏。
+### 1. 简介与原理
 
-用户服务器返回的网页（如`iwork.pku.edu.cn/user1/index.html`）若需要访问根目录资源，如`<img src="/image/1.png">`，会导致浏览器自动拼接域名和路径，使用`iwork.pku.edu.cn/image/1.png`请求该资源，而此操作跳过了反向代理服务器。
+### <font color="orangered">2. 关键技术</font>
 
-而上述路径的生成可能是动态的不可控的，因此无法在反向代理器统一对其做修改。最佳情况下只能做到大部分场景下（静态页面）可用，且无法保证该修改是没有副作用的。
+### 3. OpenVPN
 
 ---
 
-## VPN解决方案
+## 隧道化协议
 
-尚未开始调研，对vpn也不了解，但有两种不成熟的想法：
+隧道技术是一种通过使用互联网络的基础设施在网络之间传递数据的方式。
 
-1. 每个用户一个vpn账号，用于访问其内容，但从用户角度讲体验其实比较差
-2. 在阿里云服务器使用二级域名对用户服务器进行区分（我还是没有放弃这个想法），使用vpn实现阿里云访问北大内部的资源。
+使用隧道传递的数据（或负载）可以是不同协议的数据帧或包。隧道协议将这些其它协议的数据帧或包重新封装在新的包头中发送。新的包头提供了路由信息，从而使封装的负载数据能够通过互联网络传递。
+
+隧道技术是指包括数据封装，传输和解包在内的全过程。 
+
+对封装化的数据分组是否加密取决于隧道协议。例如IPSec的ESP是加密封装化的协议，L2TP则不对分组加密，保持原样地进行封装。
+
+### 分类
+
+- 二层隧道协议：对OSI（开放系统互联模型）中的第2层（数据链路层）的数据包进行封装，如PPTP，L2F，L2TP等，主要用于构建Client-LAN型的VPN。
+- 三层隧道协议：对OSI（开放系统互联模型）中的第2层（网络层）的数据包进行封装，如IPSec、GRE等，主要用于构建LAN-LAN型的VPN。
+
+---
+
+## 认证协议
+
+在远程访问VPN中，使用了用户名及口令，它们被用来判断用户名是否有权访问。PPP采用了PAP（Password Authentication Protocol）及CHAP（Challenge Handshake Authentication Protocol）等规程进行认证。PPTP及L2TP等隧道协议采用这种PPP的认证协议。
+
+## 加密技术
+
+IPSec（互联网安全协议）是IETF（互联网工程任务组）以RFC（征求意见稿）形式公布的一组安全IP协议集，是在IP层提供保护的安全协议标准，IPSec将几种安全技术结合形成一个比较完整的安全体系结构，它通过在IP协议中增加两个基于密码的安全机制——认证头（AH）和封装安全载荷（ESP）来支持IP数据项的可认证性、完整性和机密性。
+
+---
+
+## 主要内容
+
+### 1. 简介与原理
+
+### 2. 关键技术
+
+### <font color="orangered">3. OpenVPN</font>
+
+---
+
+## OpenVPN
+
+OpenVPN是一个用于创建虚拟专用网络加密通道的软件包，最早由James Yonan编写。OpenVPN允许创建的VPN使用公开密钥、电子证书、或者用户名／密码来进行身份验证。它大量使用了OpenSSL加密库中的SSLv3/TLSv1协议函数库。
+
+目前OpenVPN能在Solaris、Linux、OpenBSD、FreeBSD、NetBSD、Mac OS X与Microsoft Windows以及Android和iOS上运行，并包含了许多安全性的功能。它并不是一个基于Web的VPN软件，也不与IPsec及其他VPN软件包兼容。
+
+---
+
+## 原理
+
+OpenVPN的技术核心是虚拟网卡。
+
+虚拟网卡是使用网络底层编程技术实现的一个驱动软件。安装此类程序后主机上会增加一个非真实的网卡，并可以像其它网卡一样进行配置。服务程序可以在应用层打开虚拟网卡，如果应用软件（如网络浏览器）向虚拟网卡发送数据，则服务程序可以读取到该数据。如果服务程序写合适的数据到虚拟网卡，应用软件也可以接收得到。虚拟网卡在很多的操作系统中都有相应的实现，这也是OpenVPN能够跨平台使用的一个重要原因。
+
+在OpenVPN中，如果用户访问一个远程的虚拟地址（属于虚拟网卡配用的地址系列，区别于真实地址），则操作系统会通过路由机制将数据包（TUN模式）或数据帧（TAP模式）发送到虚拟网卡上，服务程序接收该数据并进行相应的处理后，会通过SOCKET从外网上发送出去。这完成了一个单向传输的过程，反之亦然。当远程服务程序通过SOCKET从外网上接收到数据，并进行相应的处理后，又会发送回给虚拟网卡，则该应用软件就可以接收到。
+
+---
+
+## 部署
+
+### 服务器端部署
+需要配置的东西非常多，找到一个一键部署的脚本：
+
+See [openvpn-install](https://github.com/Nyr/openvpn-install)
+
+### 客户端部署
+需要下载客户端，如MacOS下的TunnelBlick
 
 ---
 
