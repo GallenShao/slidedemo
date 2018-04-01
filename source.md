@@ -33,10 +33,6 @@ class: center, middle
 
 ---
 
-## GPU运算单元分配
-
----
-
 ## 可能的共享方式
 
 ### 用户需要使用GPU的时候动态申请，独占GPU
@@ -49,7 +45,7 @@ class: center, middle
 
 4. 在使用过程中移除设备不会影响程序运行，需监控内存使用情
 
---- 
+---
 
 ## 实现方式
 
@@ -107,7 +103,7 @@ lxc-device -n root-1-0 add /dev/nvidia0
 
 ”cgroups，其名称源自控制组群（control groups）的简写，是Linux内核的一个功能，用来限制，控制与分离一个进程组群的资源（如CPU、内存、磁盘输入输出等）。“ ——Wikipedia
 
-<ima src="./cgroup.png">
+<img src="./cgroup.png">
 
 ---
 
